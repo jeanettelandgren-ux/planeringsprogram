@@ -110,3 +110,104 @@
       <br><br>
       <button onclick="läggTillResurs()">Lägg till resurs</button>
     </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    let activeMenu = null;
+
+    function toggleMenu(menuName) {
+      const allMenus = {
+        planering: ['planering', 'planering2'],
+        order: ['order', 'order2'],
+        artiklar: ['artiklar', 'artiklar2'],
+        resurser: ['resurser', 'resurser2'],
+        operationer: ['operationer', 'operationer2'],
+        kalender: []
+      };
+
+      Object.values(allMenus).flat().forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+
+      if (activeMenu === menuName) {
+        activeMenu = null;
+      } else {
+        activeMenu = menuName;
+        allMenus[menuName].forEach(id => {
+          document.getElementById(id).style.display = 'block';
+        });
+      }
+
+      document.getElementById('operationer-sektion').style.display = 'none';
+      document.getElementById('resurser-sektion').style.display = 'none';
+
+      if (menuName === 'operationer') {
+        document.getElementById('operationer').onclick = visaOperationFormulär;
+        document.getElementById('operationer2').onclick = visaOperationer;
+      }
+
+      if (menuName === 'resurser') {
+        document.getElementById('resurser').onclick = visaResursFormulär;
+      }
+    }
+
+    const supabase = supabase.createClient(
+      'https://qblqdqcxgodsmsufsxxh.supabase.co',
+      'sb_publishable_9Ke621LZrFwngLMm2OheKw_dUhWZNP5'
+    );
+
+    function visaOperationFormulär() {
+      document.getElementById('operationer-sektion').style.display = 'block';
+      document.getElementById('operation-lista').innerHTML = '';
+    }
+
+    async function visaOperationer() {
+      document.getElementById('operationer-sektion').style.display = 'block';
+
+      const { data, error } = await supabase
+        .from('operationer')
+        .select('namn');
+
+      if (error) {
+        console.error('Fel vid hämtning:', error);
+        return;
+      }
+
+      data.sort((a, b) => a.namn.localeCompare(b.namn));
+
+      const lista = document.getElementById('operation-lista');
+      lista.innerHTML = '';
+      data.forEach(op => {
+        const li = document.createElement('li');
+        li.textContent = op.namn;
+        lista.appendChild(li);
+      });
+    }
+
+    async function läggTillOperation() {
+      const namn = document.getElementById('ny-operation-namn').value;
+
+      if (!namn) {
+        alert('Fyll i ett namn!');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('operationer')
+        .insert([{ namn }]);
+
+      if (error) {
+        console.error('Fel vid insättning:', error);
+      } else {
+        document.getElementById('ny-operation-namn').value = '';
+        alert('Operation tillagd!');
+      }
+    }
+
+    function visaResursFormulär() {
+      document.getElementById('resurser-sektion').style.display = 'block';
+    }
+
+    function beräknaKapacitet() {
+      const procent = parseInt(document.getElementById
