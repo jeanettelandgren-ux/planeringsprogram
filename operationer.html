@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Planeringsprogram</title>
+  <style>
+    body {
+      background-color: #F5F2EB;
+      font-family: Verdana;
+      color: #3A3A3A;
+      margin: 0;
+      display: flex;
+    }
+
+    .ruta1 {
+      width: 300px;
+      background-color: #ffffff;
+      border-right: 2px solid #4B6CB7;
+      padding: 20px;
+    }
+
+    .välkommen {
+      margin-bottom: 30px;
+    }
+
+    .kategori {
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .underkategori {
+      margin-left: 15px;
+      margin-bottom: 5px;
+      display: none;
+      cursor: pointer;
+    }
+
+    .ruta2-3 {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .operationer {
+      margin-top: 40px;
+    }
+
+    input[type="text"] {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ruta1">
+    <div class="välkommen">
+      <h3>Välkommen!</h3>
+      <p>Låt oss skapa ordning av kaoset 💫</p>
+    </div>
+
+    <div class="kategori" onclick="toggleMenu('planering')">Planering</div>
+    <div id="planering" class="underkategori">Översikt</div>
+    <div id="planering2" class="underkategori">Lista</div>
+
+    <div class="kategori" onclick="toggleMenu('order')">Order/Projekt</div>
+    <div id="order" class="underkategori">Ny</div>
+    <div id="order2" class="underkategori">Lista</div>
+
+    <div class="kategori" onclick="toggleMenu('artiklar')">Artiklar</div>
+    <div id="artiklar" class="underkategori">Ny</div>
+    <div id="artiklar2" class="underkategori">Lista</div>
+
+    <div class="kategori" onclick="toggleMenu('resurser')">Resurser</div>
+    <div id="resurser" class="underkategori">Ny</div>
+    <div id="resurser2" class="underkategori">Lista</div>
+
+    <div class="kategori" onclick="toggleMenu('operationer')">Operationer</div>
+    <div id="operationer" class="underkategori">Ny</div>
+    <div id="operationer2" class="underkategori">Lista</div>
+
+    <div class="kategori" onclick="toggleMenu('kalender')">Kalender</div>
+  </div>
+
+  <div class="ruta2-3">
+    <h2>Startsida</h2>
+    <p>Här visas innehållet för vald sektion</p>
+
+    <div class="operationer">
+      <h3>Operationer</h3>
+      <ul id="operation-lista"></ul>
+
+      <h4>Lägg till ny operation</h4>
+      <input type="text" id="ny-operation-namn" placeholder="Namn">
+      <button onclick="läggTillOperation()">Lägg till</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    let activeMenu = null;
+
+    function toggleMenu(menuName) {
+      const allMenus = ['planering', 'planering2', 'order', 'order2', 'artiklar', 'artiklar2', 'resurser', 'resurser2', 'operationer', 'operationer2'];
+      if (activeMenu === menuName) {
+        allMenus.forEach(id => {
+          if (id.startsWith(menuName)) {
+            document.getElementById(id).style.display = 'none';
+          }
+        });
+        activeMenu = null;
+      } else {
+        allMenus.forEach(id => {
+          document.getElementById(id).style.display = 'none';
+        });
+        allMenus.forEach(id => {
+          if (id.startsWith(menuName)) {
+            document.getElementById(id).style.display = 'block';
+          }
+        });
+        activeMenu = menuName;
+      }
+    }
+
+    const supabase = supabase.createClient(
+      'https://qblqdqcxgodsmsufsxxh.supabase.co',
+      'sb_publishable_9Ke621LZrFwngLMm2OheKw_dUhWZNP5'
+    );
+
+    async function hämtaOperationer() {
+      const { data, error } = await supabase
+        .from('operationer')
+        .select('namn');
+
+      if (error) {
+        console.error('Fel vid hämtning:', error);
+        return;
+      }
+
+      data.sort((a, b) => a.namn.localeCompare(b.namn));
+
+      const lista = document.getElementById('operation-lista');
+      lista.innerHTML = '';
+      data.forEach(op => {
+        const li = document.createElement('li');
+        li.textContent = op.namn;
+        lista.appendChild(li);
+      });
+    }
+
+    async function läggTillOperation() {
+      const namn = document.getElementById('ny-operation-namn').value;
+
+      if (!namn) {
+        alert('Fyll i ett namn!');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('operationer')
+        .insert([{ namn }]);
+
+      if (error) {
+        console.error('Fel vid insättning:', error);
+      } else {
+        document.getElementById('ny-operation-namn').value = '';
+        hämtaOperationer();
+      }
+    }
+
+    hämtaOperationer();
+  </script>
+
+</body>
+</html>
