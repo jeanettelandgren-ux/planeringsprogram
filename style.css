@@ -1,0 +1,50 @@
+body {
+  background-color: #F5F2EB;
+  font-family: Verdana;
+  color: #3A3A3A;
+  margin: 0;
+  display: flex;
+}
+
+.ruta1 {
+  width: 300px;
+  background-color: #ffffff;
+  border-right: 2px solid #4B6CB7;
+  padding: 20px;
+}
+
+.välkommen {
+  margin-bottom: 30px;
+}
+
+.kategori {
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.underkategori {
+  margin-left: 15px;
+  margin-bottom: 5px;
+  display: none;
+  cursor: pointer;
+}
+
+.ruta2-3 {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.operationer, .resurser {
+  margin-top: 40px;
+  display: none;
+}
+
+input[type="text"], select {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+label {
+  margin-right: 10px;
+}
