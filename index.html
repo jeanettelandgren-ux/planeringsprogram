@@ -43,6 +43,7 @@
 
     .operationer {
       margin-top: 40px;
+      display: none;
     }
 
     input[type="text"] {
@@ -77,16 +78,13 @@
 
     <div class="kategori" onclick="toggleMenu('operationer')">Operationer</div>
     <div id="operationer" class="underkategori">Ny</div>
-    <div id="operationer2" class="underkategori">Lista</div>
+    <div id="operationer2" class="underkategori" onclick="visaOperationer()">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('kalender')">Kalender</div>
   </div>
 
   <div class="ruta2-3">
-    <h2>Startsida</h2>
-    <p>Här visas innehållet för vald sektion</p>
-
-    <div class="operationer">
+    <div class="operationer" id="operationer-sektion">
       <h3>Operationer</h3>
       <ul id="operation-lista"></ul>
 
@@ -96,80 +94,4 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    let activeMenu = null;
-
-    function toggleMenu(menuName) {
-      const allMenus = ['planering', 'planering2', 'order', 'order2', 'artiklar', 'artiklar2', 'resurser', 'resurser2', 'operationer', 'operationer2'];
-      if (activeMenu === menuName) {
-        allMenus.forEach(id => {
-          if (id.startsWith(menuName)) {
-            document.getElementById(id).style.display = 'none';
-          }
-        });
-        activeMenu = null;
-      } else {
-        allMenus.forEach(id => {
-          document.getElementById(id).style.display = 'none';
-        });
-        allMenus.forEach(id => {
-          if (id.startsWith(menuName)) {
-            document.getElementById(id).style.display = 'block';
-          }
-        });
-        activeMenu = menuName;
-      }
-    }
-
-    const supabase = supabase.createClient(
-      'https://qblqdqcxgodsmsufsxxh.supabase.co',
-      'sb_publishable_9Ke621LZrFwngLMm2OheKw_dUhWZNP5'
-    );
-
-    async function hämtaOperationer() {
-      const { data, error } = await supabase
-        .from('operationer')
-        .select('namn');
-
-      if (error) {
-        console.error('Fel vid hämtning:', error);
-        return;
-      }
-
-      data.sort((a, b) => a.namn.localeCompare(b.namn));
-
-      const lista = document.getElementById('operation-lista');
-      lista.innerHTML = '';
-      data.forEach(op => {
-        const li = document.createElement('li');
-        li.textContent = op.namn;
-        lista.appendChild(li);
-      });
-    }
-
-    async function läggTillOperation() {
-      const namn = document.getElementById('ny-operation-namn').value;
-
-      if (!namn) {
-        alert('Fyll i ett namn!');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('operationer')
-        .insert([{ namn }]);
-
-      if (error) {
-        console.error('Fel vid insättning:', error);
-      } else {
-        document.getElementById('ny-operation-namn').value = '';
-        hämtaOperationer();
-      }
-    }
-
-    hämtaOperationer();
-  </script>
-
-</body>
-</html>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js">
