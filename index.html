@@ -82,7 +82,7 @@
 
     <div class="kategori" onclick="toggleMenu('operationer')">Operationer</div>
     <div id="operationer" class="underkategori">Ny</div>
-    <div id="operationer2" class="underkategori" onclick="visaOperationer()">Lista</div>
+    <div id="operationer2" class="underkategori">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('kalender')">Kalender</div>
   </div>
@@ -150,6 +150,11 @@
       document.getElementById('operationer-sektion').style.display = 'none';
       document.getElementById('resurser-sektion').style.display = 'none';
 
+      if (menuName === 'operationer') {
+        document.getElementById('operationer').onclick = visaOperationFormulär;
+        document.getElementById('operationer2').onclick = visaOperationer;
+      }
+
       if (menuName === 'resurser') {
         document.getElementById('resurser').onclick = visaResursFormulär;
       }
@@ -159,6 +164,11 @@
       'https://qblqdqcxgodsmsufsxxh.supabase.co',
       'sb_publishable_9Ke621LZrFwngLMm2OheKw_dUhWZNP5'
     );
+
+    function visaOperationFormulär() {
+      document.getElementById('operationer-sektion').style.display = 'block';
+      document.getElementById('operation-lista').innerHTML = '';
+    }
 
     async function visaOperationer() {
       document.getElementById('operationer-sektion').style.display = 'block';
@@ -199,7 +209,7 @@
         console.error('Fel vid insättning:', error);
       } else {
         document.getElementById('ny-operation-namn').value = '';
-        visaOperationer();
+        alert('Operation tillagd!');
       }
     }
 
@@ -210,13 +220,4 @@
     function beräknaKapacitet() {
       const procent = parseInt(document.getElementById('resurs-procent').value);
       let kapacitet = '–';
-      if (procent === 100) kapacitet = 36.25;
-      if (procent === 75) kapacitet = 26.25;
-      if (procent === 50) kapacitet = 16.25;
-      document.getElementById('resurs-kapacitet').textContent = kapacitet;
-    }
-
-    async function läggTillResurs() {
-      const namn = document.getElementById('resurs-namn').value;
-      const typ = document.getElementById('resurs-typ').value;
-      const procent = parseInt(document.getElementById('
+      if (procent === 
