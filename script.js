@@ -90,6 +90,7 @@ async function läggTillOperation() {
     document.getElementById('ny-operation-namn').value = '';
     document.getElementById('ny-operation-info').value = '';
     alert('Operation tillagd!');
+    visaOperationer(); // 👈 Lägg till detta för att uppdatera listan direkt
   }
 }
 
