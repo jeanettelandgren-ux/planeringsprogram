@@ -106,6 +106,30 @@ async function läggTillOperation() {
 function visaResursFormulär() {
   document.getElementById('resurser-sektion').style.display = 'block';
 }
+async function visaResurser() {
+  document.getElementById('resurser-sektion').style.display = 'block';
+
+  const { data, error } = await supabaseClient
+    .from('resurser')
+    .select('*');
+
+  if (error) {
+    console.error('Fel vid hämtning av resurser:', error);
+    alert('Kunde inte hämta resurser.');
+    return;
+  }
+
+  data.sort((a, b) => a.namn.localeCompare(b.namn));
+
+  const lista = document.getElementById('resurs-lista');
+  lista.innerHTML = '';
+
+  data.forEach(resurs => {
+    const li = document.createElement('li');
+    li.textContent = `${resurs.namn} – ${resurs.typ} – ${resurs.kapacitet}`;
+    lista.appendChild(li);
+  });
+}
 
 function beräknaKapacitet() {
   const procent = parseInt(document.getElementById('resurs-procent').value);
