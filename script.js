@@ -38,7 +38,9 @@ function toggleMenu(menuName) {
   }
 }
 
-const supabase = supabase.createClient(
+// ✅ Supabase-initiering med rätt syntax
+const { createClient } = supabase;
+const supabaseClient = createClient(
   'https://qblqdqcxgodsmsufsxxh.supabase.co',
   'sb_publishable_9Ke621LZrFwngLMm2OheKw_dUhWZNP5'
 );
@@ -51,9 +53,9 @@ function visaOperationFormulär() {
 async function visaOperationer() {
   document.getElementById('operationer-sektion').style.display = 'block';
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('operationer')
-    .select('*'); // 👈 Hämtar alla kolumner
+    .select('*');
 
   if (error) {
     console.error('Fel vid hämtning:', error);
@@ -68,7 +70,7 @@ async function visaOperationer() {
 
   data.forEach(op => {
     const li = document.createElement('li');
-    li.textContent = `${op.namn} – ${op.info || ''}`; // 👈 Visar både namn och info
+    li.textContent = `${op.namn} – ${op.info || ''}`;
     lista.appendChild(li);
   });
 }
@@ -77,28 +79,29 @@ async function läggTillOperation() {
   const namn = document.getElementById('ny-operation-namn').value;
   const info = document.getElementById('ny-operation-info').value;
 
-  console.log('Försöker lägga till:', { namn, info }); // För felsökning
+  console.log('Försöker lägga till:', { namn, info });
 
   if (!namn) {
     alert('Fyll i ett namn!');
     return;
   }
 
-  const { data, error } = await supabase
-    .from('operationer') // 👈 matchar din tabell
+  const { data, error } = await supabaseClient
+    .from('operationer')
     .insert([{ namn, info }]);
 
   if (error) {
     console.error('Fel vid insättning:', error);
-    alert('Det gick inte att spara operationen. Kontrollera anslutningen eller tabellnamnet.');
+    alert('Det gick inte att spara operationen.');
   } else {
     console.log('Resultat från Supabase:', data);
     document.getElementById('ny-operation-namn').value = '';
     document.getElementById('ny-operation-info').value = '';
     alert('Operation tillagd!');
-    visaOperationer(); // 👈 uppdaterar listan direkt
+    visaOperationer();
   }
 }
+
 function visaResursFormulär() {
   document.getElementById('resurser-sektion').style.display = 'block';
 }
@@ -124,7 +127,7 @@ async function läggTillResurs() {
     return;
   }
 
-  const { error } = await supabase
+  const { error } = await supabaseClient
     .from('resurser')
     .insert([{ namn, typ, procent, kapacitet, arbetsdagar }]);
 
