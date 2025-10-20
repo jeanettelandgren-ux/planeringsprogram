@@ -188,7 +188,7 @@
       });
     }
 
-    async function läggTillOperation() {
+        async function läggTillOperation() {
       const namn = document.getElementById('ny-operation-namn').value;
       const info = document.getElementById('ny-operation-info').value;
 
@@ -205,6 +205,47 @@
         console.error('Fel vid insättning:', error);
       } else {
         document.getElementById('ny-operation-namn').value = '';
-        document.getElementBy
-        </script>
+        document.getElementById('ny-operation-info').value = '';
+        alert('Operation tillagd!');
+      }
+    }
 
+    function visaResursFormulär() {
+      document.getElementById('resurser-sektion').style.display = 'block';
+    }
+
+    function beräknaKapacitet() {
+      const procent = parseInt(document.getElementById('resurs-procent').value);
+      let kapacitet = '–';
+      if (procent === 100) kapacitet = 36.25;
+      if (procent === 75) kapacitet = 26.25;
+      if (procent === 50) kapacitet = 16.25;
+      document.getElementById('resurs-kapacitet').textContent = kapacitet;
+    }
+
+    async function läggTillResurs() {
+      const namn = document.getElementById('resurs-namn').value;
+      const typ = document.getElementById('resurs-typ').value;
+      const procent = parseInt(document.getElementById('resurs-procent').value);
+      const kapacitet = parseFloat(document.getElementById('resurs-kapacitet').textContent);
+      const arbetsdagar = Array.from(document.querySelectorAll('#resurser-sektion input[type="checkbox"]:checked')).map(cb => cb.value);
+
+      if (!namn || !typ || isNaN(procent) || isNaN(kapacitet)) {
+        alert('Fyll i alla fält!');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('resurser')
+        .insert([{ namn, typ, procent, kapacitet, arbetsdagar }]);
+
+      if (error) {
+        console.error('Fel vid insättning:', error);
+      } else {
+        alert('Resurs tillagd!');
+        document.getElementById('resurser-sektion').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
