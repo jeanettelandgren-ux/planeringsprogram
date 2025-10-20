@@ -53,10 +53,11 @@ async function visaOperationer() {
 
   const { data, error } = await supabase
     .from('operationer')
-    .select('namn');
+    .select('*'); // 👈 Hämtar alla kolumner
 
   if (error) {
     console.error('Fel vid hämtning:', error);
+    alert('Kunde inte hämta operationer.');
     return;
   }
 
@@ -64,9 +65,10 @@ async function visaOperationer() {
 
   const lista = document.getElementById('operation-lista');
   lista.innerHTML = '';
+
   data.forEach(op => {
     const li = document.createElement('li');
-    li.textContent = op.namn;
+    li.textContent = `${op.namn} – ${op.info || ''}`; // 👈 Visar både namn och info
     lista.appendChild(li);
   });
 }
@@ -90,6 +92,7 @@ async function läggTillOperation() {
     console.error('Fel vid insättning:', error);
     alert('Det gick inte att spara operationen. Kontrollera anslutningen eller tabellnamnet.');
   } else {
+    console.log('Resultat från Supabase:', data);
     document.getElementById('ny-operation-namn').value = '';
     document.getElementById('ny-operation-info').value = '';
     alert('Operation tillagd!');
