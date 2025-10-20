@@ -34,18 +34,19 @@ function toggleMenu(menuName) {
   }
 
   if (menuName === 'resurser') {
-  document.getElementById('resurser').onclick = visaResursFormulär;
-  document.getElementById('resurser2').onclick = visaResurser;
-}
+    document.getElementById('resurser').onclick = visaResursFormulär;
+    document.getElementById('resurser2').onclick = visaResurser;
+  }
 }
 
-// ✅ Supabase-initiering med rätt syntax
+// ✅ Supabase-initiering
 const { createClient } = supabase;
 const supabaseClient = createClient(
   'https://qblqdqcxgodsmsufsxxh.supabase.co',
   'sb_publishable_9Ke621LZrFwngLMm2OheKw_dUhWZNP5'
 );
 
+// 🛠 Operationer
 function visaOperationFormulär() {
   document.getElementById('operationer-sektion').style.display = 'block';
   document.getElementById('operation-lista').innerHTML = '';
@@ -91,10 +92,9 @@ async function läggTillOperation() {
     .from('operationer')
     .insert([{ namn, info }]);
 
- if (error) {
-  console.error('Fel vid insättning:', error);
-  alert(`Det gick inte att spara operationen.\n${error.message}`);
-}
+  if (error) {
+    console.error('Fel vid insättning:', error);
+    alert('Det gick inte att spara operationen.');
   } else {
     console.log('Resultat från Supabase:', data);
     document.getElementById('ny-operation-namn').value = '';
@@ -104,9 +104,11 @@ async function läggTillOperation() {
   }
 }
 
+// 🛠 Resurser
 function visaResursFormulär() {
   document.getElementById('resurser-sektion').style.display = 'block';
 }
+
 async function visaResurser() {
   document.getElementById('resurser-sektion').style.display = 'block';
 
@@ -162,7 +164,7 @@ async function läggTillResurs() {
     alert('Det gick inte att spara resursen.');
   } else {
     alert('Resurs tillagd!');
-    visaResurser(); // 👈 Uppdaterar listan direkt
+    visaResurser();
     document.getElementById('resurser-sektion').style.display = 'none';
   }
 }
