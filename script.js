@@ -90,9 +90,10 @@ async function läggTillOperation() {
     .from('operationer')
     .insert([{ namn, info }]);
 
-  if (error) {
-    console.error('Fel vid insättning:', error);
-    alert('Det gick inte att spara operationen.');
+ if (error) {
+  console.error('Fel vid insättning:', error);
+  alert(`Det gick inte att spara operationen.\n${error.message}`);
+}
   } else {
     console.log('Resultat från Supabase:', data);
     document.getElementById('ny-operation-namn').value = '';
