@@ -86,3 +86,128 @@
 
       <h4>Lägg till ny operation</h4>
       <input type="text" id="ny-operation-namn" placeholder="Namn">
+      <input type="text" id="ny-operation-info" placeholder="Info (frivilligt)">
+      <button onclick="läggTillOperation()">Lägg till</button>
+    </div>
+
+    <div class="resurser" id="resurser-sektion">
+      <h3>Ny resurs</h3>
+      <input type="text" id="resurs-namn" placeholder="Namn">
+      <input type="text" id="resurs-typ" placeholder="Typ (t.ex. personal)">
+      <select id="resurs-procent" onchange="beräknaKapacitet()">
+        <option value="">Välj procent</option>
+        <option value="100">100%</option>
+        <option value="75">75%</option>
+        <option value="50">50%</option>
+      </select>
+      <p>Kapacitet: <span id="resurs-kapacitet">–</span> timmar</p>
+
+      <p>Arbetsdagar:</p>
+      <label><input type="checkbox" value="mån"> Mån</label>
+      <label><input type="checkbox" value="tis"> Tis</label>
+      <label><input type="checkbox" value="ons"> Ons</label>
+      <label><input type="checkbox" value="tors"> Tors</label>
+      <label><input type="checkbox" value="fre"> Fre</label>
+      <br><br>
+      <button onclick="läggTillResurs()">Lägg till resurs</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    let activeMenu = null;
+
+    function toggleMenu(menuName) {
+      const allMenus = {
+        planering: ['planering', 'planering2'],
+        order: ['order', 'order2'],
+        artiklar: ['artiklar', 'artiklar2'],
+        resurser: ['resurser', 'resurser2'],
+        operationer: ['operationer', 'operationer2'],
+        kalender: []
+      };
+
+      Object.values(allMenus).flat().forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+
+      if (activeMenu === menuName) {
+        activeMenu = null;
+      } else {
+        activeMenu = menuName;
+        allMenus[menuName].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = 'block';
+        });
+      }
+
+      document.getElementById('operationer-sektion').style.display = 'none';
+      document.getElementById('resurser-sektion').style.display = 'none';
+
+      if (menuName === 'operationer') {
+        document.getElementById('operationer').onclick = visaOperationFormulär;
+        document.getElementById('operationer2').onclick = visaOperationer;
+      }
+
+      if (menuName === 'resurser') {
+        document.getElementById('resurser').onclick = visaResursFormulär;
+      }
+    }
+
+    const supabase = supabase.createClient(
+      'https://qblqdqcxgodsmsufsxxh.supabase.co',
+      'sb_publishable_9Ke621LZrFwngLMm2OheKw_dUhWZNP5'
+    );
+
+    function visaOperationFormulär() {
+      document.getElementById('operationer-sektion').style.display = 'block';
+      document.getElementById('operation-lista').innerHTML = '';
+    }
+
+    async function visaOperationer() {
+      document.getElementById('operationer-sektion').style.display = 'block';
+
+      const { data, error } = await supabase
+        .from('operationer')
+        .select('namn');
+
+      if (error) {
+        console.error('Fel vid hämtning:', error);
+        return;
+      }
+
+      data.sort((a, b) => a.namn.localeCompare(b.namn));
+
+      const lista = document.getElementById('operation-lista');
+      lista.innerHTML = '';
+      data.forEach(op => {
+        const li = document.createElement('li');
+        li.textContent = op.namn;
+        lista.appendChild(li);
+      });
+    }
+
+    async function läggTillOperation() {
+      const namn = document.getElementById('ny-operation-namn').value;
+      const info = document.getElementById('ny-operation-info').value;
+
+      if (!namn) {
+        alert('Fyll i ett namn!');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('operationer')
+        .insert([{ namn, info }]);
+
+      if (error) {
+        console.error('Fel vid insättning:', error);
+      } else {
+        document.getElementById('ny-operation-namn').value = '';
+        document.getElementById('ny-operation-info').value = '';
+        alert('Operation tillagd!');
+      }
+    }
+
+    function visaResursFormulär() {
