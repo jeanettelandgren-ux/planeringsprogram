@@ -75,25 +75,27 @@ async function läggTillOperation() {
   const namn = document.getElementById('ny-operation-namn').value;
   const info = document.getElementById('ny-operation-info').value;
 
+  console.log('Försöker lägga till:', { namn, info }); // För felsökning
+
   if (!namn) {
     alert('Fyll i ett namn!');
     return;
   }
 
-  const { error } = await supabase
-    .from('operationer')
+  const { data, error } = await supabase
+    .from('operationer') // 👈 matchar din tabell
     .insert([{ namn, info }]);
 
   if (error) {
     console.error('Fel vid insättning:', error);
+    alert('Det gick inte att spara operationen. Kontrollera anslutningen eller tabellnamnet.');
   } else {
     document.getElementById('ny-operation-namn').value = '';
     document.getElementById('ny-operation-info').value = '';
     alert('Operation tillagd!');
-    visaOperationer(); // 👈 Lägg till detta för att uppdatera listan direkt
+    visaOperationer(); // 👈 uppdaterar listan direkt
   }
 }
-
 function visaResursFormulär() {
   document.getElementById('resurser-sektion').style.display = 'block';
 }
