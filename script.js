@@ -34,8 +34,9 @@ function toggleMenu(menuName) {
   }
 
   if (menuName === 'resurser') {
-    document.getElementById('resurser').onclick = visaResursFormulär;
-  }
+  document.getElementById('resurser').onclick = visaResursFormulär;
+  document.getElementById('resurser2').onclick = visaResurser;
+}
 }
 
 // ✅ Supabase-initiering med rätt syntax
@@ -158,8 +159,10 @@ async function läggTillResurs() {
 
   if (error) {
     console.error('Fel vid insättning:', error);
+    alert('Det gick inte att spara resursen.');
   } else {
     alert('Resurs tillagd!');
+    visaResurser(); // 👈 Uppdaterar listan direkt
     document.getElementById('resurser-sektion').style.display = 'none';
   }
 }
