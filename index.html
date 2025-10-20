@@ -41,14 +41,18 @@
       padding: 20px;
     }
 
-    .operationer {
+    .operationer, .resurser {
       margin-top: 40px;
       display: none;
     }
 
-    input[type="text"] {
+    input[type="text"], select {
       margin-right: 10px;
       margin-bottom: 10px;
+    }
+
+    label {
+      margin-right: 10px;
     }
   </style>
 </head>
@@ -92,6 +96,28 @@
       <input type="text" id="ny-operation-namn" placeholder="Namn">
       <button onclick="läggTillOperation()">Lägg till</button>
     </div>
+
+    <div class="resurser" id="resurser-sektion">
+      <h3>Ny resurs</h3>
+      <input type="text" id="resurs-namn" placeholder="Namn">
+      <input type="text" id="resurs-typ" placeholder="Typ (t.ex. personal)">
+      <select id="resurs-procent" onchange="beräknaKapacitet()">
+        <option value="">Välj procent</option>
+        <option value="100">100%</option>
+        <option value="75">75%</option>
+        <option value="50">50%</option>
+      </select>
+      <p>Kapacitet: <span id="resurs-kapacitet">–</span> timmar</p>
+
+      <p>Arbetsdagar:</p>
+      <label><input type="checkbox" value="mån"> Mån</label>
+      <label><input type="checkbox" value="tis"> Tis</label>
+      <label><input type="checkbox" value="ons"> Ons</label>
+      <label><input type="checkbox" value="tors"> Tors</label>
+      <label><input type="checkbox" value="fre"> Fre</label>
+      <br><br>
+      <button onclick="läggTillResurs()">Lägg till resurs</button>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -108,12 +134,10 @@
         kalender: []
       };
 
-      // Stäng alla underkategorier
       Object.values(allMenus).flat().forEach(id => {
         document.getElementById(id).style.display = 'none';
       });
 
-      // Visa underkategorier för vald meny
       if (activeMenu === menuName) {
         activeMenu = null;
       } else {
@@ -123,8 +147,12 @@
         });
       }
 
-      // Dölj operationer-sektionen när meny byts
       document.getElementById('operationer-sektion').style.display = 'none';
+      document.getElementById('resurser-sektion').style.display = 'none';
+
+      if (menuName === 'resurser') {
+        document.getElementById('resurser').onclick = visaResursFormulär;
+      }
     }
 
     const supabase = supabase.createClient(
@@ -174,7 +202,21 @@
         visaOperationer();
       }
     }
-  </script>
 
-</body>
-</html>
+    function visaResursFormulär() {
+      document.getElementById('resurser-sektion').style.display = 'block';
+    }
+
+    function beräknaKapacitet() {
+      const procent = parseInt(document.getElementById('resurs-procent').value);
+      let kapacitet = '–';
+      if (procent === 100) kapacitet = 36.25;
+      if (procent === 75) kapacitet = 26.25;
+      if (procent === 50) kapacitet = 16.25;
+      document.getElementById('resurs-kapacitet').textContent = kapacitet;
+    }
+
+    async function läggTillResurs() {
+      const namn = document.getElementById('resurs-namn').value;
+      const typ = document.getElementById('resurs-typ').value;
+      const procent = parseInt(document.getElementById('
