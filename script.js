@@ -62,11 +62,33 @@ async function visaOperationer() {
   lista.innerHTML = '';
 
   data.forEach(op => {
-    const li = document.createElement('li');
-    li.textContent = `${op.namn} – ${op.info || ''}`;
-    lista.appendChild(li);
-  });
+  const li = document.createElement('li');
+  li.textContent = `${op.namn} – ${op.info || ''} `;
+
+  const knapp = document.createElement('button');
+  knapp.textContent = 'Ta bort';
+  knapp.onclick = () => taBortOperation(op.id);
+
+  li.appendChild(knapp);
+  lista.appendChild(li);
+});
+
 }
+async function taBortOperation(id) {
+  const { error } = await supabaseClient
+    .from('operationer')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Fel vid borttagning:', error);
+    alert('Det gick inte att ta bort operationen.');
+  } else {
+    alert('Operation borttagen!');
+    visaOperationer(); // Uppdatera listan direkt
+  }
+}
+
 
 async function läggTillOperation() {
   const namn = document.getElementById('ny-operation-namn').value;
