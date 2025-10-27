@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planeringsprogram</title>
-  <link rel="stylesheet" href="style.css"> <!-- ✅ Här ska den ligga -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="ruta1">
@@ -13,88 +13,82 @@
       <p>Låt oss skapa ordning av kaoset 💫</p>
     </div>
 
-    <!-- resten av menyn... -->
+    <div class="kategori" onclick="toggleMenu('planering')">Planering</div>
+    <div id="planering-ny" class="underkategori">Översikt</div>
+    <div id="planering-lista" class="underkategori">Lista</div>
 
+    <div class="kategori" onclick="toggleMenu('order')">Order/Projekt</div>
+    <div id="order-ny" class="underkategori">Ny</div>
+    <div id="order-lista" class="underkategori">Lista</div>
 
-  <div class="kategori" onclick="toggleMenu('planering')">Planering</div>
-  <div id="planering-ny" class="underkategori">Översikt</div>
-  <div id="planering-lista" class="underkategori">Lista</div>
+    <div class="kategori" onclick="toggleMenu('artiklar')">Artiklar</div>
+    <div id="artiklar-ny" class="underkategori">Ny</div>
+    <div id="artiklar-lista" class="underkategori">Lista</div>
 
-  <div class="kategori" onclick="toggleMenu('order')">Order/Projekt</div>
-  <div id="order-ny" class="underkategori">Ny</div>
-  <div id="order-lista" class="underkategori">Lista</div>
+    <div class="kategori" onclick="toggleMenu('resurser')">Resurser</div>
+    <div id="resurser-ny" class="underkategori" onclick="visaResursFormulär()">Ny</div>
+    <div id="resurser-lista" class="underkategori" onclick="visaResurser()">Lista</div>
 
-  <div class="kategori" onclick="toggleMenu('artiklar')">Artiklar</div>
-  <div id="artiklar-ny" class="underkategori">Ny</div>
-  <div id="artiklar-lista" class="underkategori">Lista</div>
+    <div class="kategori" onclick="toggleMenu('operationer')">Operationer</div>
+    <div id="operationer-ny" class="underkategori" onclick="visaOperationFormulär()">Ny</div>
+    <div id="operationer-lista" class="underkategori" onclick="visaOperationer()">Lista</div>
 
-  <div class="kategori" onclick="toggleMenu('resurser')">Resurser</div>
-  <div id="resurser-ny" class="underkategori" onclick="visaResursFormulär()">Ny</div>
-  <div id="resurser-lista" class="underkategori" onclick="visaResurser()">Lista</div>
-
-  <div class="kategori" onclick="toggleMenu('operationer')">Operationer</div>
-  <div id="operationer-ny" class="underkategori" onclick="visaOperationFormulär()">Ny</div>
-  <div id="operationer-lista" class="underkategori" onclick="visaOperationer()">Lista</div>
-
-  <div class="kategori" onclick="toggleMenu('kalender')">Kalender</div>
-</div>
-
-<div class="ruta2-3">
-  <!-- Operationer -->
-  <div class="operationer" id="operationer-sektion" style="display: none;">
-    <h3>Operationer</h3>
-    <ul id="operation-lista"></ul>
-
-    <div id="operation-formulär" style="display: none;">
-      <h4>Lägg till ny operation</h4>
-      <input type="text" id="ny-operation-namn" placeholder="Namn">
-      <input type="text" id="ny-operation-info" placeholder="Info (frivilligt)">
-      <button onclick="läggTillOperation()">Lägg till</button>
-    </div>
+    <div class="kategori" onclick="toggleMenu('kalender')">Kalender</div>
   </div>
 
-  <!-- Resurser -->
-  <div class="resurser" id="resurser-sektion" style="display: none;">
-    <h3>Resurser</h3>
-    <ul id="resurs-lista"></ul>
+  <div class="ruta2-3">
+    <!-- Operationer -->
+    <div class="operationer" id="operationer-sektion" style="display: none;">
+      <h3>Operationer</h3>
+      <ul id="operation-lista"></ul>
 
-    <div id="resurs-formulär" style="display: none;">
-      <h4>Lägg till ny resurs</h4>
-      <input type="text" id="resurs-namn" placeholder="Namn">
-      <input type="text" id="resurs-typ" placeholder="Typ (t.ex. personal)">
-      <label>
-  <input type="checkbox" id="resurs-aktiv" checked>
-  Aktiv resurs
-</label>
-      <label for="resurs-procent">Procent:</label>
-      <select id="resurs-procent" onchange="beräknaKapacitet()">
-        <option value="">Välj procent</option>
-        <option value="100">100%</option>
-        <option value="75">75%</option>
-        <option value="50">50%</option>
-      </select>
-      <p>Kapacitet: <span id="resurs-kapacitet">–</span> timmar</p>
+      <div id="operation-formulär" style="display: none;">
+        <h4>Lägg till ny operation</h4>
+        <input type="text" id="ny-operation-namn" placeholder="Namn">
+        <input type="text" id="ny-operation-info" placeholder="Info (frivilligt)">
+        <button onclick="läggTillOperation()">Lägg till</button>
+      </div>
+    </div>
 
-      <p>Arbetsdagar:</p>
-      <label><input type="checkbox" value="mån"> Mån</label>
-      <label><input type="checkbox" value="tis"> Tis</label>
-      <label><input type="checkbox" value="ons"> Ons</label>
-      <label><input type="checkbox" value="tors"> Tors</label>
-      <label><input type="checkbox" value="fre"> Fre</label>
-      <label>
-  <input type="checkbox" id="resurs-alla-dagar" onchange="markeraAllaDagar()"> Alla
-</label>
-      <br><br>
-      <button onclick="läggTillResurs()">Lägg till resurs</button>
+    <!-- Resurser -->
+    <div class="resurser" id="resurser-sektion" style="display: none;">
+      <h3>Resurser</h3>
+      <ul id="resurs-lista"></ul>
+
+      <div id="resurs-formulär" style="display: none;">
+        <h4>Lägg till ny resurs</h4>
+        <input type="text" id="resurs-namn" placeholder="Namn">
+        <input type="text" id="resurs-typ" placeholder="Typ (t.ex. personal)">
+
+        <label>
+          <input type="checkbox" id="resurs-aktiv" checked>
+          Aktiv resurs
+        </label>
+
+        <label for="resurs-procent">Procent:</label>
+        <select id="resurs-procent" onchange="beräknaKapacitet()">
+          <option value="">Välj procent</option>
+          <option value="100">100%</option>
+          <option value="75">75%</option>
+          <option value="50">50%</option>
+        </select>
+        <p>Kapacitet: <span id="resurs-kapacitet">–</span> timmar</p>
+
+        <p>Arbetsdagar:</p>
+        <label><input type="checkbox" id="resurs-alla-dagar" onchange="markeraAllaDagar()"> Alla</label>
+        <label><input type="checkbox" value="mån"> Mån</label>
+        <label><input type="checkbox" value="tis"> Tis</label>
+        <label><input type="checkbox" value="ons"> Ons</label>
+        <label><input type="checkbox" value="tors"> Tors</label>
+        <label><input type="checkbox" value="fre"> Fre</label>
+
+        <br><br>
+        <button onclick="läggTillResurs()">Lägg till resurs</button>
+      </div>
     </div>
   </div>
-</div>
-
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
