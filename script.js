@@ -2,11 +2,11 @@ let activeMenu = null;
 
 function toggleMenu(menuName) {
   const allMenus = {
-    planering: ['planering', 'planering2'],
-    order: ['order', 'order2'],
-    artiklar: ['artiklar', 'artiklar2'],
-    resurser: ['resurser', 'resurser2'],
-    operationer: ['operationer', 'operationer2'],
+    planering: ['planering-ny', 'planering-lista'],
+    order: ['order-ny', 'order-lista'],
+    artiklar: ['artiklar-ny', 'artiklar-lista'],
+    resurser: ['resurser-ny', 'resurser-lista'],
+    operationer: ['operationer-ny', 'operationer-lista'],
     kalender: []
   };
 
@@ -27,13 +27,6 @@ function toggleMenu(menuName) {
 
   document.getElementById('operationer-sektion').style.display = 'none';
   document.getElementById('resurser-sektion').style.display = 'none';
-
-  }
-
-  if (menuName === 'resurser') {
-    document.getElementById('resurser').onclick = visaResursFormulär;
-    document.getElementById('resurser2').onclick = visaResurser;
-  }
 }
 
 // ✅ Supabase-initiering
@@ -50,6 +43,7 @@ function visaOperationFormulär() {
 }
 
 async function visaOperationer() {
+  console.log('Visar operationer');
   document.getElementById('operationer-sektion').style.display = 'block';
 
   const { data, error } = await supabaseClient
@@ -78,8 +72,6 @@ async function läggTillOperation() {
   const namn = document.getElementById('ny-operation-namn').value;
   const info = document.getElementById('ny-operation-info').value;
 
-  console.log('Försöker lägga till:', { namn, info });
-
   if (!namn) {
     alert('Fyll i ett namn!');
     return;
@@ -93,10 +85,9 @@ async function läggTillOperation() {
     console.error('Fel vid insättning:', error);
     alert('Det gick inte att spara operationen.');
   } else {
-    console.log('Resultat från Supabase:', data);
+    alert('Operation tillagd!');
     document.getElementById('ny-operation-namn').value = '';
     document.getElementById('ny-operation-info').value = '';
-    alert('Operation tillagd!');
     visaOperationer();
   }
 }
@@ -107,6 +98,7 @@ function visaResursFormulär() {
 }
 
 async function visaResurser() {
+  console.log('Visar resurser');
   document.getElementById('resurser-sektion').style.display = 'block';
 
   const { data, error } = await supabaseClient
