@@ -147,6 +147,11 @@ async function visaResurser() {
     const li = document.createElement('li');
     li.textContent = `${resurs.namn} – ${resurs.typ} – ${resurs.kapacitet} `;
 
+    if (!resurs.aktiv) {
+      li.style.color = '#888';
+      li.style.fontStyle = 'italic';
+    }
+
     const knapp = document.createElement('button');
     knapp.textContent = 'Ta bort';
     knapp.onclick = () => taBortResurs(resurs.id);
@@ -160,8 +165,12 @@ async function läggTillResurs() {
   const namn = document.getElementById('resurs-namn').value;
   const typ = document.getElementById('resurs-typ').value;
   const procent = parseInt(document.getElementById('resurs-procent').value);
-  const kapacitet = procent ? Math.round(procent * 40 / 100) : null;
   const aktiv = document.getElementById('resurs-aktiv').checked;
+
+  let kapacitet = null;
+  if (procent === 100) kapacitet = 36.25;
+  else if (procent === 75) kapacitet = 26.25;
+  else if (procent === 50) kapacitet = 16.25;
 
   const arbetsdagar = Array.from(document.querySelectorAll('input[type="checkbox"][value]'))
     .filter(cb => cb.checked)
@@ -203,6 +212,17 @@ async function taBortResurs(id) {
   }
 }
 
+function beräknaKapacitet() {
+  const procent = parseInt(document.getElementById('resurs-procent').value);
+  let kapacitet = '–';
+
+  if (procent === 100) kapacitet = 36.25;
+  else if (procent === 75) kapacitet = 26.25;
+  else if (procent === 50) kapacitet = 16.25;
+
+  document.getElementById('resurs-kapacitet').textContent = kapacitet;
+}
+
 function markeraAllaDagar() {
   const allaMarkerad = document.getElementById('resurs-alla-dagar').checked;
   const dagar = ['mån', 'tis', 'ons', 'tors', 'fre'];
@@ -212,5 +232,3 @@ function markeraAllaDagar() {
     if (checkbox) checkbox.checked = allaMarkerad;
   });
 }
-
-
