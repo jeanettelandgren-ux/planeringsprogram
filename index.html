@@ -15,30 +15,30 @@
     </div>
 
     <div class="kategori" onclick="toggleMenu('planering')">Planering</div>
-    <div id="planering" class="underkategori">Översikt</div>
-    <div id="planering2" class="underkategori">Lista</div>
+    <div id="planering-ny" class="underkategori">Översikt</div>
+    <div id="planering-lista" class="underkategori">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('order')">Order/Projekt</div>
-    <div id="order" class="underkategori">Ny</div>
-    <div id="order2" class="underkategori">Lista</div>
+    <div id="order-ny" class="underkategori">Ny</div>
+    <div id="order-lista" class="underkategori">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('artiklar')">Artiklar</div>
-    <div id="artiklar" class="underkategori">Ny</div>
-    <div id="artiklar2" class="underkategori">Lista</div>
+    <div id="artiklar-ny" class="underkategori">Ny</div>
+    <div id="artiklar-lista" class="underkategori">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('resurser')">Resurser</div>
-    <div id="resurser" class="underkategori">Ny</div>
-    <div id="resurser2" class="underkategori">Lista</div>
+    <div id="resurser-ny" class="underkategori" onclick="visaResursFormulär()">Ny</div>
+    <div id="resurser-lista" class="underkategori" onclick="visaResurser()">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('operationer')">Operationer</div>
-   <div id="operationer" class="underkategori" onclick="visaOperationFormulär()">Ny</div>
-<div id="operationer2" class="underkategori" onclick="visaOperationer()">Lista</div>
+    <div id="operationer-ny" class="underkategori" onclick="visaOperationFormulär()">Ny</div>
+    <div id="operationer-lista" class="underkategori" onclick="visaOperationer()">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('kalender')">Kalender</div>
   </div>
 
   <div class="ruta2-3">
-    <div class="operationer" id="operationer-sektion">
+    <div class="operationer" id="operationer-sektion" style="display: none;">
       <h3>Operationer</h3>
       <ul id="operation-lista"></ul>
 
@@ -48,9 +48,10 @@
       <button onclick="läggTillOperation()">Lägg till</button>
     </div>
 
-    <div class="resurser" id="resurser-sektion">
+    <div class="resurser" id="resurser-sektion" style="display: none;">
       <h3>Ny resurs</h3>
       <ul id="resurs-lista"></ul>
+
       <input type="text" id="resurs-namn" placeholder="Namn">
       <input type="text" id="resurs-typ" placeholder="Typ (t.ex. personal)">
       <label for="resurs-procent">Procent:</label>
@@ -77,5 +78,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
