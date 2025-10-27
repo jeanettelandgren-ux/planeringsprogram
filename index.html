@@ -47,7 +47,10 @@
         <input type="text" id="artikel-namn" placeholder="Artikelnamn" />
         <input type="text" id="artikel-nummer" placeholder="Artikelnummer" />
         <input type="text" id="artikel-info" placeholder="Beskrivning (frivilligt)" />
-        <label><input type="checkbox" id="artikel-mall" /> Mallartikel?</label>
+        <label>
+          <input type="checkbox" id="artikel-mall" />
+          Mallartikel?
+        </label>
         <button onclick="läggTillArtikel()">Lägg till</button>
       </div>
 
@@ -56,8 +59,25 @@
         <input type="text" id="redigera-artikel-namn" placeholder="Artikelnamn" />
         <input type="text" id="redigera-artikel-nummer" placeholder="Artikelnummer" />
         <input type="text" id="redigera-artikel-info" placeholder="Beskrivning" />
-        <label><input type="checkbox" id="redigera-artikel-mall" /> Mallartikel?</label>
+        <label>
+          <input type="checkbox" id="redigera-artikel-mall" />
+          Mallartikel?
+        </label>
         <button onclick="sparaArtikelÄndring()">Spara ändring</button>
+      </div>
+    </div>
+
+    <!-- Operationer -->
+    <div class="operationer" id="operationer-sektion" style="display: none;">
+      <h3>Operationer</h3>
+      <ul id="operation-lista"></ul>
+
+      <div id="operation-formulär" style="display: none;">
+        <h4>Lägg till ny operation</h4>
+        <input type="text" id="operation-namn" placeholder="Operationens namn" />
+        <input type="datetime-local" id="operation-start" />
+        <input type="datetime-local" id="operation-slut" />
+        <button onclick="läggTillOperation()">Lägg till</button>
       </div>
     </div>
   </div>
