@@ -1,50 +1,118 @@
+/* Grundlayout */
 body {
-  background-color: #F5F2EB;
-  font-family: Verdana;
-  color: #3A3A3A;
   margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8f9fa;
   display: flex;
+  height: 100vh;
 }
 
+/* Vänstermeny */
 .ruta1 {
-  width: 300px;
-  background-color: #ffffff;
-  border-right: 2px solid #4B6CB7;
+  width: 250px;
+  background-color: #e3e7ec;
   padding: 20px;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
 }
 
 .välkommen {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .kategori {
   font-weight: bold;
+  margin-top: 15px;
   cursor: pointer;
-  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #d0d6dd;
+  transition: background-color 0.2s;
+}
+
+.kategori:hover {
+  background-color: #c0c6cd;
 }
 
 .underkategori {
-  margin-left: 15px;
-  margin-bottom: 5px;
-  display: none;
+  margin-left: 10px;
+  margin-top: 5px;
   cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  background-color: #f0f2f5;
+  transition: background-color 0.2s;
 }
 
+.underkategori:hover {
+  background-color: #e0e2e5;
+}
+
+/* Högersida */
 .ruta2-3 {
-  flex-grow: 1;
-  padding: 20px;
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
 }
 
-.operationer, .resurser {
-  margin-top: 40px;
-  display: none;
+/* Sektioner */
+.artiklar,
+.operationer,
+.resurser {
+  margin-bottom: 40px;
 }
 
-input[type="text"], select {
-  margin-right: 10px;
+h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  margin-bottom: 8px;
+  padding: 6px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Mallartikel-stil */
+li.mallartikel {
+  font-weight: bold;
+  color: #0055aa;
+  background-color: #eef4ff;
+}
+
+/* Formulär */
+input[type="text"],
+input[type="datetime-local"] {
+  display: block;
   margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 label {
-  margin-right: 10px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #0055aa;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #004080;
 }
