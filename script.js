@@ -1,4 +1,5 @@
 let activeMenu = null;
+let aktuellArtikelId = null;
 
 function toggleMenu(menuName) {
   const allMenus = {
@@ -27,6 +28,7 @@ function toggleMenu(menuName) {
 
   document.getElementById('operationer-sektion').style.display = 'none';
   document.getElementById('resurser-sektion').style.display = 'none';
+  document.getElementById('artiklar-sektion').style.display = 'none';
 }
 
 // ✅ Supabase-initiering
@@ -36,199 +38,131 @@ const supabaseClient = createClient(
   'sb_publishable_9Ke621LZrFwngLMm2OheKw_dUhWZNP5'
 );
 
-// 🛠 Operationer
-function visaOperationFormulär() {
-  document.getElementById('operationer-sektion').style.display = 'block';
-  document.getElementById('operation-lista').innerHTML = '';
-  document.getElementById('operation-formulär').style.display = 'block';
+// 🛠 Artiklar
+function visaArtikelFormulär() {
+  document.getElementById('artiklar-sektion').style.display = 'block';
+  document.getElementById('artikel-lista').innerHTML = '';
+  document.getElementById('artikel-formulär').style.display = 'block';
+  document.getElementById('artikel-redigera-formulär').style.display = 'none';
 }
 
-async function visaOperationer() {
-  document.getElementById('operationer-sektion').style.display = 'block';
-  document.getElementById('operation-formulär').style.display = 'none';
+async function visaArtiklar() {
+  document.getElementById('artiklar-sektion').style.display = 'block';
+  document.getElementById('artikel-formulär').style.display = 'none';
+  document.getElementById('artikel-redigera-formulär').style.display = 'none';
 
   const { data, error } = await supabaseClient
-    .from('operationer')
+    .from('artiklar')
     .select('*');
 
   if (error) {
-    console.error('Fel vid hämtning:', error);
-    alert('Kunde inte hämta operationer.');
+    console.error('Fel vid hämtning av artiklar:', error);
+    alert('Kunde inte hämta artiklar.');
     return;
   }
 
   data.sort((a, b) => a.namn.localeCompare(b.namn));
 
-  const lista = document.getElementById('operation-lista');
+  const lista = document.getElementById('artikel-lista');
   lista.innerHTML = '';
 
-  data.forEach(op => {
+  data.forEach(artikel => {
     const li = document.createElement('li');
-    li.textContent = `${op.namn} – ${op.info || ''} `;
+    li.textContent = `${artikel.namn} – ${artikel.artikelnummer} – ${artikel.info || ''}`;
 
-    const knapp = document.createElement('button');
-    knapp.textContent = 'Ta bort';
-    knapp.onclick = () => taBortOperation(op.id);
-
-    li.appendChild(knapp);
-    lista.appendChild(li);
-  });
-}
-
-async function läggTillOperation() {
-  const namn = document.getElementById('ny-operation-namn').value;
-  const info = document.getElementById('ny-operation-info').value;
-
-  if (!namn) {
-    alert('Fyll i ett namn!');
-    return;
-  }
-
-  const { error } = await supabaseClient
-    .from('operationer')
-    .insert([{ namn, info }]);
-
-  if (error) {
-    console.error('Fel vid insättning:', error);
-    alert('Det gick inte att spara operationen.');
-  } else {
-    alert('Operation tillagd!');
-    document.getElementById('ny-operation-namn').value = '';
-    document.getElementById('ny-operation-info').value = '';
-    visaOperationer();
-  }
-}
-
-async function taBortOperation(id) {
-  const bekräfta = confirm('Ta bort operation?');
-  if (!bekräfta) return;
-
-  const { error } = await supabaseClient
-    .from('operationer')
-    .delete()
-    .eq('id', id);
-
-  if (error) {
-    console.error('Fel vid borttagning:', error);
-    alert('Det gick inte att ta bort operationen.');
-  } else {
-    alert('Operation borttagen!');
-    visaOperationer();
-  }
-}
-
-// 🛠 Resurser
-function visaResursFormulär() {
-  document.getElementById('resurser-sektion').style.display = 'block';
-  document.getElementById('resurs-lista').innerHTML = '';
-  document.getElementById('resurs-formulär').style.display = 'block';
-}
-
-async function visaResurser() {
-  document.getElementById('resurser-sektion').style.display = 'block';
-  document.getElementById('resurs-formulär').style.display = 'none';
-
-  const { data, error } = await supabaseClient
-    .from('resurser')
-    .select('*');
-
-  if (error) {
-    console.error('Fel vid hämtning av resurser:', error);
-    alert('Kunde inte hämta resurser.');
-    return;
-  }
-
-  data.sort((a, b) => a.namn.localeCompare(b.namn));
-
-  const lista = document.getElementById('resurs-lista');
-  lista.innerHTML = '';
-
-  data.forEach(resurs => {
-    const li = document.createElement('li');
-    li.textContent = `${resurs.namn} – ${resurs.typ} – ${resurs.kapacitet} `;
-
-    if (!resurs.aktiv) {
-      li.style.color = '#888';
-      li.style.fontStyle = 'italic';
+    if (artikel.mall) {
+      li.style.fontWeight = 'bold';
+      li.style.color = '#0055aa';
     }
 
-    const knapp = document.createElement('button');
-    knapp.textContent = 'Ta bort';
-    knapp.onclick = () => taBortResurs(resurs.id);
+    const redigeraKnapp = document.createElement('button');
+    redigeraKnapp.textContent = 'Redigera';
+    redigeraKnapp.onclick = () => visaRedigeraArtikel(artikel);
 
-    li.appendChild(knapp);
+    const taBortKnapp = document.createElement('button');
+    taBortKnapp.textContent = 'Ta bort';
+    taBortKnapp.onclick = () => taBortArtikel(artikel.id);
+
+    li.appendChild(redigeraKnapp);
+    li.appendChild(taBortKnapp);
     lista.appendChild(li);
   });
 }
 
-async function läggTillResurs() {
-  const namn = document.getElementById('resurs-namn').value;
-  const typ = document.getElementById('resurs-typ').value;
-  const procent = parseInt(document.getElementById('resurs-procent').value);
-  const aktiv = document.getElementById('resurs-aktiv').checked;
+async function läggTillArtikel() {
+  const namn = document.getElementById('artikel-namn').value;
+  const artikelnummer = document.getElementById('artikel-nummer').value;
+  const info = document.getElementById('artikel-info').value;
+  const mall = document.getElementById('artikel-mall').checked;
 
-  let kapacitet = null;
-  if (procent === 100) kapacitet = 36.25;
-  else if (procent === 75) kapacitet = 26.25;
-  else if (procent === 50) kapacitet = 16.25;
-
-  const arbetsdagar = Array.from(document.querySelectorAll('input[type="checkbox"][value]'))
-    .filter(cb => cb.checked)
-    .map(cb => cb.value);
-
-  if (!namn || !typ || !procent || arbetsdagar.length === 0) {
-    alert('Fyll i alla fält och välj arbetsdagar!');
+  if (!namn || !artikelnummer) {
+    alert('Fyll i både namn och artikelnummer!');
     return;
   }
 
   const { error } = await supabaseClient
-    .from('resurser')
-    .insert([{ namn, typ, procent, kapacitet, arbetsdagar, aktiv }]);
+    .from('artiklar')
+    .insert([{ namn, artikelnummer, info, mall }]);
 
   if (error) {
     console.error('Fel vid insättning:', error);
-    alert('Det gick inte att spara resursen.');
+    alert('Det gick inte att spara artikeln.');
   } else {
-    alert('Resurs tillagd!');
-    visaResurser();
+    alert('Artikel tillagd!');
+    visaArtiklar();
   }
 }
 
-async function taBortResurs(id) {
-  const bekräfta = confirm('Ta bort resurs?');
+function visaRedigeraArtikel(artikel) {
+  aktuellArtikelId = artikel.id;
+  document.getElementById('artikel-redigera-formulär').style.display = 'block';
+
+  document.getElementById('redigera-artikel-namn').value = artikel.namn;
+  document.getElementById('redigera-artikel-nummer').value = artikel.artikelnummer;
+  document.getElementById('redigera-artikel-info').value = artikel.info || '';
+  document.getElementById('redigera-artikel-mall').checked = artikel.mall;
+}
+
+async function sparaArtikelÄndring() {
+  const namn = document.getElementById('redigera-artikel-namn').value;
+  const artikelnummer = document.getElementById('redigera-artikel-nummer').value;
+  const info = document.getElementById('redigera-artikel-info').value;
+  const mall = document.getElementById('redigera-artikel-mall').checked;
+
+  if (!namn || !artikelnummer) {
+    alert('Fyll i både namn och artikelnummer!');
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from('artiklar')
+    .update({ namn, artikelnummer, info, mall })
+    .eq('id', aktuellArtikelId);
+
+  if (error) {
+    console.error('Fel vid uppdatering:', error);
+    alert('Det gick inte att uppdatera artikeln.');
+  } else {
+    alert('Artikel uppdaterad!');
+    document.getElementById('artikel-redigera-formulär').style.display = 'none';
+    visaArtiklar();
+  }
+}
+
+async function taBortArtikel(id) {
+  const bekräfta = confirm('Ta bort artikel?');
   if (!bekräfta) return;
 
   const { error } = await supabaseClient
-    .from('resurser')
+    .from('artiklar')
     .delete()
     .eq('id', id);
 
   if (error) {
     console.error('Fel vid borttagning:', error);
-    alert('Det gick inte att ta bort resursen.');
+    alert('Det gick inte att ta bort artikeln.');
   } else {
-    alert('Resurs borttagen!');
-    visaResurser();
+    alert('Artikel borttagen!');
+    visaArtiklar();
   }
-}
-
-function beräknaKapacitet() {
-  const procent = parseInt(document.getElementById('resurs-procent').value);
-  let kapacitet = '–';
-
-  if (procent === 100) kapacitet = 36.25;
-  else if (procent === 75) kapacitet = 26.25;
-  else if (procent === 50) kapacitet = 16.25;
-
-  document.getElementById('resurs-kapacitet').textContent = kapacitet;
-}
-
-function markeraAllaDagar() {
-  const allaMarkerad = document.getElementById('resurs-alla-dagar').checked;
-  const dagar = ['mån', 'tis', 'ons', 'tors', 'fre'];
-
-  dagar.forEach(dag => {
-    const checkbox = document.querySelector(`input[type="checkbox"][value="${dag}"]`);
-    if (checkbox) checkbox.checked = allaMarkerad;
-  });
 }
