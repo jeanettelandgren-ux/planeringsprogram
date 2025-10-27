@@ -128,4 +128,48 @@ async function visaResurser() {
   document.getElementById('resurser-sektion').style.display = 'block';
   document.getElementById('resurs-formulär').style.display = 'none';
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
+  .from('resurser')
+  .select('*');
+
+
+  if (error) {
+    console.error('Fel vid hämtning av resurser:', error);
+    alert('Kunde inte hämta resurser.');
+    return;
+  }
+
+  data.sort((a, b) => a.namn.localeCompare(b.namn));
+
+  const lista = document.getElementById('resurs-lista');
+  lista.innerHTML = '';
+
+  data.forEach(resurs => {
+    const li = document.createElement('li');
+    li.textContent = `${resurs.namn} – ${resurs.typ} – ${resurs.kapacitet} `;
+
+    const knapp = document.createElement('button');
+    knapp.textContent = 'Ta bort';
+    knapp.onclick = () => taBortResurs(resurs.id);
+
+    li.appendChild(knapp);
+    lista.appendChild(li);
+  });
+}
+async function taBortResurs(id) {
+  const bekräfta = confirm('Ta bort resurs?');
+  if (!bekräfta) return;
+
+  const { error } = await supabaseClient
+    .from('resurser')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Fel vid borttagning:', error);
+    alert('Det gick inte att ta bort resursen.');
+  } else {
+    alert('Resurs borttagen!');
+    visaResurser();
+  }
+}
