@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Planeringsprogram</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="ruta1">
@@ -22,8 +22,8 @@
     <div id="order-lista" class="underkategori">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('artiklar')">Artiklar</div>
-    <div id="artiklar-ny" class="underkategori">Ny</div>
-    <div id="artiklar-lista" class="underkategori">Lista</div>
+    <div id="artiklar-ny" class="underkategori" onclick="visaArtikelFormulär()">Ny</div>
+    <div id="artiklar-lista" class="underkategori" onclick="visaArtiklar()">Lista</div>
 
     <div class="kategori" onclick="toggleMenu('resurser')">Resurser</div>
     <div id="resurser-ny" class="underkategori" onclick="visaResursFormulär()">Ny</div>
@@ -37,53 +37,27 @@
   </div>
 
   <div class="ruta2-3">
-    <!-- Operationer -->
-    <div class="operationer" id="operationer-sektion" style="display: none;">
-      <h3>Operationer</h3>
-      <ul id="operation-lista"></ul>
+    <!-- Artiklar -->
+    <div class="artiklar" id="artiklar-sektion" style="display: none;">
+      <h3>Artiklar</h3>
+      <ul id="artikel-lista"></ul>
 
-      <div id="operation-formulär" style="display: none;">
-        <h4>Lägg till ny operation</h4>
-        <input type="text" id="ny-operation-namn" placeholder="Namn">
-        <input type="text" id="ny-operation-info" placeholder="Info (frivilligt)">
-        <button onclick="läggTillOperation()">Lägg till</button>
+      <div id="artikel-formulär" style="display: none;">
+        <h4>Lägg till ny artikel</h4>
+        <input type="text" id="artikel-namn" placeholder="Artikelnamn" />
+        <input type="text" id="artikel-nummer" placeholder="Artikelnummer" />
+        <input type="text" id="artikel-info" placeholder="Beskrivning (frivilligt)" />
+        <label><input type="checkbox" id="artikel-mall" /> Mallartikel?</label>
+        <button onclick="läggTillArtikel()">Lägg till</button>
       </div>
-    </div>
 
-    <!-- Resurser -->
-    <div class="resurser" id="resurser-sektion" style="display: none;">
-      <h3>Resurser</h3>
-      <ul id="resurs-lista"></ul>
-
-      <div id="resurs-formulär" style="display: none;">
-        <h4>Lägg till ny resurs</h4>
-        <input type="text" id="resurs-namn" placeholder="Namn">
-        <input type="text" id="resurs-typ" placeholder="Typ (t.ex. personal)">
-
-        <label>
-          <input type="checkbox" id="resurs-aktiv" checked>
-          Aktiv resurs
-        </label>
-
-        <label for="resurs-procent">Procent:</label>
-        <select id="resurs-procent" onchange="beräknaKapacitet()">
-          <option value="">Välj procent</option>
-          <option value="100">100%</option>
-          <option value="75">75%</option>
-          <option value="50">50%</option>
-        </select>
-        <p>Kapacitet: <span id="resurs-kapacitet">–</span> timmar</p>
-
-        <p>Arbetsdagar:</p>
-        <label><input type="checkbox" id="resurs-alla-dagar" onchange="markeraAllaDagar()"> Alla</label>
-        <label><input type="checkbox" value="mån"> Mån</label>
-        <label><input type="checkbox" value="tis"> Tis</label>
-        <label><input type="checkbox" value="ons"> Ons</label>
-        <label><input type="checkbox" value="tors"> Tors</label>
-        <label><input type="checkbox" value="fre"> Fre</label>
-
-        <br><br>
-        <button onclick="läggTillResurs()">Lägg till resurs</button>
+      <div id="artikel-redigera-formulär" style="display: none;">
+        <h4>Redigera artikel</h4>
+        <input type="text" id="redigera-artikel-namn" placeholder="Artikelnamn" />
+        <input type="text" id="redigera-artikel-nummer" placeholder="Artikelnummer" />
+        <input type="text" id="redigera-artikel-info" placeholder="Beskrivning" />
+        <label><input type="checkbox" id="redigera-artikel-mall" /> Mallartikel?</label>
+        <button onclick="sparaArtikelÄndring()">Spara ändring</button>
       </div>
     </div>
   </div>
