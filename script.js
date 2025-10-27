@@ -129,9 +129,8 @@ async function visaResurser() {
   document.getElementById('resurs-formulär').style.display = 'none';
 
   const { data, error } = await supabaseClient
-  .from('resurser')
-  .select('*');
-
+    .from('resurser')
+    .select('*');
 
   if (error) {
     console.error('Fel vid hämtning av resurser:', error);
@@ -156,6 +155,36 @@ async function visaResurser() {
     lista.appendChild(li);
   });
 }
+
+async function läggTillResurs() {
+  const namn = document.getElementById('resurs-namn').value;
+  const typ = document.getElementById('resurs-typ').value;
+  const procent = parseInt(document.getElementById('resurs-procent').value);
+  const kapacitet = procent ? Math.round(procent * 40 / 100) : null;
+  const aktiv = document.getElementById('resurs-aktiv').checked;
+
+  const arbetsdagar = Array.from(document.querySelectorAll('input[type="checkbox"][value]'))
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  if (!namn || !typ || !procent || arbetsdagar.length === 0) {
+    alert('Fyll i alla fält och välj arbetsdagar!');
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from('resurser')
+    .insert([{ namn, typ, procent, kapacitet, arbetsdagar, aktiv }]);
+
+  if (error) {
+    console.error('Fel vid insättning:', error);
+    alert('Det gick inte att spara resursen.');
+  } else {
+    alert('Resurs tillagd!');
+    visaResurser();
+  }
+}
+
 async function taBortResurs(id) {
   const bekräfta = confirm('Ta bort resurs?');
   if (!bekräfta) return;
@@ -173,3 +202,15 @@ async function taBortResurs(id) {
     visaResurser();
   }
 }
+
+function markeraAllaDagar() {
+  const allaMarkerad = document.getElementById('resurs-alla-dagar').checked;
+  const dagar = ['mån', 'tis', 'ons', 'tors', 'fre'];
+
+  dagar.forEach(dag => {
+    const checkbox = document.querySelector(`input[type="checkbox"][value="${dag}"]`);
+    if (checkbox) checkbox.checked = allaMarkerad;
+  });
+}
+
+
