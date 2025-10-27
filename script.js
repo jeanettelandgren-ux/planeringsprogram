@@ -28,9 +28,6 @@ function toggleMenu(menuName) {
   document.getElementById('operationer-sektion').style.display = 'none';
   document.getElementById('resurser-sektion').style.display = 'none';
 
-  if (menuName === 'operationer') {
-    document.getElementById('operationer').onclick = visaOperationFormulär;
-    document.getElementById('operationer2').onclick = visaOperationer;
   }
 
   if (menuName === 'resurser') {
